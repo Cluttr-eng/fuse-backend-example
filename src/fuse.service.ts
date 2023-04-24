@@ -64,8 +64,8 @@ export class FuseService {
         };
 
         const response = await fuseApi.createSession(createSessionRequest);
-        console.log(response.data.session_client_secret);
-        return response;
+        console.log(response.data.client_secret);
+        return response.data;
     }
 
     async createLinkToken(
@@ -96,7 +96,7 @@ export class FuseService {
 
         const response = await fuseApi.createLinkToken(createLinkTokenRequest);
         console.log(response.data.link_token);
-        return response;
+        return response.data;
 
     }
 
@@ -110,7 +110,7 @@ export class FuseService {
         //Store the access token and financial connection id
         console.log(response.data.access_token);
         console.log(response.data.financial_connection_id);
-        return response;
+        return response.data
     }
 
     async getAccounts(
@@ -124,7 +124,7 @@ export class FuseService {
         // See https://letsfuse.readme.io/docs/duplicate-accounts
         console.log(response.data.accounts);
         console.log(response.data.financial_connection);
-        return response;
+        return response.data
     }
 
     async getAccountDetails(
@@ -135,7 +135,7 @@ export class FuseService {
         });
         console.log(response.data.account_details);
         console.log(response.data.financial_connection);
-        return response;
+        return response.data;
     }
 
     async getBalances(accessToken: string, remoteAccountIds?: string[]) {
@@ -149,6 +149,7 @@ export class FuseService {
             })
         });
         console.log(response.data.balances);
+        return response.data;
     }
 
     async getOwners(
@@ -161,7 +162,7 @@ export class FuseService {
         response.data.accounts.forEach(curAccount => {
             console.log(curAccount.owners);
         })
-        return response;
+        return response.data;
     }
 
     async getTransactions(accessToken: string) {
@@ -181,7 +182,7 @@ export class FuseService {
         });
         console.log(response.data.total_transactions);
         console.log(response.data.transactions);
-        return  response;
+        return  response.data;
     }
 
     async handleWebhook(headers: IncomingHttpHeaders, event: WebhookEvent) {

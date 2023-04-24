@@ -1,6 +1,5 @@
-import { ExchangeFinancialConnectionsPublicTokenResponse } from "fuse-node/api";
-import { FuseService } from "./fuse.service";
-import {Router} from "express";
+import {FuseService} from './fuse.service';
+import {Router} from 'express';
 
 export class FuseController {
     private service: FuseService;
@@ -15,9 +14,8 @@ export class FuseController {
     init() {
         // This generates a client secret which the front end fuse sdk uses to open up the list of bank institutions
         this.router.post('/create-session', async (req, res) => {
-            const { userId, financialConnectionId } = req.body;
-            const { status, response } = await this.service.createSession(userId, financialConnectionId);
-            res.status(status).json(response);
+            const { user_id, access_token, is_web_view } = req.body;
+            res.status(200).json(await this.service.createSession(user_id, access_token, is_web_view));
         });
 
         // After the user chooses an institution, the institution id is passed to this endpoint
@@ -25,8 +23,7 @@ export class FuseController {
         // the user.
         this.router.post('/create-link-token', async (req, res) => {
             const { user_id, institution_id, client_secret } = req.body;
-            const { status, response } = await this.service.createLinkToken(user_id, institution_id, client_secret);
-            res.status(status).json(response);
+            res.status(200).json(await this.service.createLinkToken(user_id, institution_id, client_secret));
         });
 
         // Once the user has connected (or reconnected) this will exchange the public token from the front end sdk
@@ -65,5 +62,9 @@ export class FuseController {
             const { status } = await this.service.handleWebhook(req.headers, req.body);
             res.status(status);
         });
+    }
+
+    getRouter(): Router {
+        return this.router;
     }
 }
