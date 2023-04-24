@@ -12,6 +12,7 @@ import {
 import {IncomingHttpHeaders} from 'http';
 import * as crypto from 'crypto';
 import keys from "./keys";
+import { backOff } from 'exponential-backoff';
 
 const configuration = new Configuration({
     basePath: keys.FUSE_BASE_PATH,
@@ -107,7 +108,9 @@ export class FuseService {
             public_token: publicToken
         };
         const response = await fuseApi.exchangeFinancialConnectionsPublicToken(exchangePublicTokenRequest);
-        //Store the access token and financial connection id
+        // Store the access token and financial connection id
+        // The access token should NOT be sent to the front end. It should be securely stored.
+        // This is just an example.
         console.log(response.data.access_token);
         console.log(response.data.financial_connection_id);
         return response.data
@@ -139,15 +142,16 @@ export class FuseService {
     }
 
     async getBalances(accessToken: string, remoteAccountIds?: string[]) {
-        // A remote account id is the "remote_id" field returned as part of the getFinancialConnectionsAccounts call.
-        const response = await fuseApi.getFinancialConnectionsBalances({
+        // Balances request may time out the first time you call it. We recommend retrying with exponential backoff.
+        const response = await this.withBackoff(() => fuseApi.getFinancialConnectionsBalances({
             access_token: accessToken,
             ...(remoteAccountIds && remoteAccountIds.length > 0 && {
                 options: {
+                    // A remote account id is the "remote_id" field returned as part of the getFinancialConnectionsAccounts call.
                     remote_account_ids: remoteAccountIds
                 }
             })
-        });
+        }));
         console.log(response.data.balances);
         return response.data;
     }
@@ -166,11 +170,11 @@ export class FuseService {
     }
 
     async getTransactions(accessToken: string) {
-
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
-        const response =  await fuseApi.getFinancialConnectionsTransactions({
+        // Transaction requests may time out the first time you call it. We recommend retrying with exponential backoff.
+        const response =  await this.withBackoff(() => fuseApi.getFinancialConnectionsTransactions({
             access_token: accessToken,
             //YYYY-MM-DD
             start_date: threeMonthsAgo.toISOString().split('T')[0],
@@ -179,7 +183,7 @@ export class FuseService {
             page: 1,
             // Max is 100. Keep incrementing the page until the 'transactions' array is empty.
             records_per_page: 100
-        });
+        }));
         console.log(response.data.total_transactions);
         console.log(response.data.transactions);
         return  response.data;
@@ -259,4 +263,12 @@ export class FuseService {
     hmacSignature(key: any, msg: any): string {
         return crypto.createHmac('sha256', key).update(msg).digest('base64');
     }
+
+    async withBackoff(request: any, attempts = 1) {
+        return backOff(() => request(), {
+            delayFirstAttempt: false,
+            numOfAttempts: attempts,
+            maxDelay: 5000
+        });
+
 }
