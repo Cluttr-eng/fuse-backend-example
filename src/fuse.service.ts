@@ -142,7 +142,7 @@ export class FuseService {
     }
 
     async getBalances(accessToken: string, remoteAccountIds?: string[]) {
-        // Balances request may time out the first time you call it. We recommend retrying with exponential backoff.
+        // Balance requests may time out the first time you call it. We recommend retrying with exponential backoff.
         const response = await this.withBackoff(() => fuseApi.getFinancialConnectionsBalances({
             access_token: accessToken,
             ...(remoteAccountIds && remoteAccountIds.length > 0 && {
@@ -270,5 +270,6 @@ export class FuseService {
             numOfAttempts: attempts,
             maxDelay: 5000
         });
+    }
 
 }
