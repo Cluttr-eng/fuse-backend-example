@@ -143,7 +143,7 @@ export class FuseService {
 
     async getBalances(accessToken: string, remoteAccountIds?: string[]) {
         // Balance requests may time out the first time you call it. We recommend retrying with exponential backoff.
-        const response = await this.withBackoff(() => fuseApi.getFinancialConnectionsBalances({
+        const response: any = await this.withBackoff(() => fuseApi.getFinancialConnectionsBalances({
             access_token: accessToken,
             ...(remoteAccountIds && remoteAccountIds.length > 0 && {
                 options: {
@@ -174,7 +174,7 @@ export class FuseService {
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
         // Transaction requests may time out the first time you call it. We recommend retrying with exponential backoff.
-        const response =  await this.withBackoff(() => fuseApi.getFinancialConnectionsTransactions({
+        const response: any =  await this.withBackoff(() => fuseApi.getFinancialConnectionsTransactions({
             access_token: accessToken,
             //YYYY-MM-DD
             start_date: threeMonthsAgo.toISOString().split('T')[0],
