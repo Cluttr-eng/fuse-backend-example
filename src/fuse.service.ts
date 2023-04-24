@@ -172,7 +172,7 @@ export class FuseService {
         });
         console.log(response.data.accounts);
         response.data.accounts.forEach(curAccount => {
-            console.log(curAccount.owners);
+            console.log(JSON.stringify(curAccount.owners, null, 4));
         })
         return response.data;
     }
@@ -194,7 +194,7 @@ export class FuseService {
             records_per_page: 100
         }));
         console.log(response.data.total_transactions);
-        console.log(response.data.transactions);
+        console.log(JSON.stringify(response.data.transactions, null, 4));
         return  response.data;
     }
 
