@@ -109,16 +109,21 @@ export class FuseService {
         };
         const response = await fuseApi.exchangeFinancialConnectionsPublicToken(exchangePublicTokenRequest);
         // Store the access token and financial connection id
-        // The access token should NOT be sent to the front end. It should be securely stored.
-        // This is just an example.
-        console.log(response.data.access_token);
-        console.log(response.data.financial_connection_id);
-        return response.data
+        const accessToken = response.data.access_token;
+        const financialConnectionId = response.data.financial_connection_id;
+
+        this.getAccounts(accessToken);
+        this.getAccountDetails(accessToken);
+        this.getBalances(accessToken);
+        this.getOwners(accessToken);
+        this.getTransactions(accessToken);
+        return {};
     }
 
     async getAccounts(
         accessToken: string
     ) {
+        console.log("Fetching accounts");
         const response = await fuseApi.getFinancialConnectionsAccounts({
             access_token: accessToken
         });
@@ -133,6 +138,7 @@ export class FuseService {
     async getAccountDetails(
         accessToken: string
     ) {
+        console.log("Fetching account details");
         const response = await fuseApi.getFinancialConnectionsAccountDetails({
             access_token: accessToken
         });
@@ -142,6 +148,7 @@ export class FuseService {
     }
 
     async getBalances(accessToken: string, remoteAccountIds?: string[]) {
+        console.log("Fetching balances");
         // Balance requests may time out the first time you call it. We recommend retrying with exponential backoff.
         const response: any = await this.withBackoff(() => fuseApi.getFinancialConnectionsBalances({
             access_token: accessToken,
@@ -159,6 +166,7 @@ export class FuseService {
     async getOwners(
         accessToken: string
     ) {
+        console.log("Fetching owners");
         const response = await fuseApi.getFinancialConnectionsOwners({
             access_token: accessToken
         });
@@ -170,6 +178,7 @@ export class FuseService {
     }
 
     async getTransactions(accessToken: string) {
+        console.log("Fetching transactions");
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
