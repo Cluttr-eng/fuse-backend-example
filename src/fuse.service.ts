@@ -56,7 +56,7 @@ export class FuseService {
                 access_token: accessToken,
             }),
             // True by default.
-            // If you are NOT using mobile, set to False.
+            // If you are NOT using mobile, set to false.
             // If using mobile, set to true/false depending on if a webview is being used.
             ...(isWebView && {
                 is_web_view: isWebView
