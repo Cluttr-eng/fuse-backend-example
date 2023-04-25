@@ -17,7 +17,7 @@ const port = process.env.PORT || 8080;
 server.use("/", fuseController.getRouter());
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.error(JSON.stringify(err, null, 2));
+  console.error(err);
   res
     .status(500)
     .json({ error_message: "Something unexpected broke in the server" });
