@@ -47,8 +47,9 @@ export default function Index() {
 
   const onSuccess = async (publicToken: string) => {
     await backendFetch("/exchange-public-token", "POST", {
-      public_token: "publicToken",
+      public_token: publicToken,
     });
+    setClientSecret("");
   };
 
   return (

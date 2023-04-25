@@ -188,7 +188,7 @@ export class FuseService {
         //Starts at page 1.
         page: 1,
         // Max is 100. Keep incrementing the page until the 'transactions' array is empty.
-        records_per_page: 100,
+        records_per_page: 10,
       })
     );
     console.log(response.data.total_transactions);
