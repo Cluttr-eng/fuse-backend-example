@@ -111,12 +111,7 @@ export class FuseService {
     const accessToken = response.data.access_token;
     const financialConnectionId = response.data.financial_connection_id;
 
-    await this.getAccounts(accessToken);
-    await this.getAccountDetails(accessToken);
-    await this.getBalances(accessToken);
-    await this.getOwners(accessToken);
-    await this.getTransactions(accessToken);
-    return {};
+    return accessToken;
   }
 
   async getAccounts(accessToken: string) {

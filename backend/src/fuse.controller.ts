@@ -46,8 +46,13 @@ export class FuseController {
 
       this.service
         .exchangePublicToken(public_token)
-        .then((result) => {
-          res.status(200).json(result);
+        .then(async (accessToken) => {
+          await this.service.getAccounts(accessToken);
+          await this.service.getAccountDetails(accessToken);
+          await this.service.getBalances(accessToken);
+          await this.service.getOwners(accessToken);
+          await this.service.getTransactions(accessToken);
+          res.status(200).json({});
         })
         .catch((err) => {
           next(err);
