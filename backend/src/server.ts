@@ -1,9 +1,6 @@
 import express from 'express';
-import * as dotenv from 'dotenv';
 import { FuseController } from './fuse.controller';
 import {FuseService} from "./fuse.service";
-
-dotenv.config();
 
 const server = express();
 server.use(express.json());

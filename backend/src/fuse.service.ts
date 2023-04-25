@@ -9,26 +9,28 @@ import {
     WebhookEvent,
     WebhookType
 } from 'fuse-node';
+import * as dotenv from 'dotenv';
 import {IncomingHttpHeaders} from 'http';
 import * as crypto from 'crypto';
-import keys from "./keys";
 import { backOff } from 'exponential-backoff';
 
+dotenv.config();
+
 const configuration = new Configuration({
-    basePath: keys.FUSE_BASE_PATH,
+    basePath: process.env.FUSE_BASE_PATH,
     baseOptions: {
         headers: {
-            'Fuse-Client-Id': keys.FUSE_CLIENT_ID,
-            'Fuse-Api-Key': keys.FUSE_API_KEY,
+            'Fuse-Client-Id': process.env.FUSE_CLIENT_ID,
+            'Fuse-Api-Key': process.env.FUSE_API_KEY,
             'Content-Type': 'application/json',
-            'Plaid-Client-Id': keys.PLAID_CLIENT_ID,
-            'Plaid-Secret': keys.PLAID_SECRET,
-            'Teller-Application-Id': keys.TELLER_APPLICATION_ID,
-            'Teller-Certificate': keys.TELLER_CERTIFICATE,
-            'Teller-Private-Key': keys.TELLER_PRIVATE_KEY,
-            'Teller-Signing-Secret': keys.TELLER_SIGNING_SECRET,
-            'Mx-Client-Id': keys.MX_CLIENT_ID,
-            'Mx-Api-Key': keys.MX_API_KEY
+            'Plaid-Client-Id': process.env.PLAID_CLIENT_ID,
+            'Plaid-Secret': process.env.PLAID_SECRET,
+            'Teller-Application-Id': process.env.TELLER_APPLICATION_ID,
+            'Teller-Certificate': process.env.TELLER_CERTIFICATE,
+            'Teller-Private-Key': process.env.TELLER_PRIVATE_KEY,
+            'Teller-Signing-Secret': process.env.TELLER_SIGNING_SECRET,
+            'Mx-Client-Id': process.env.MX_CLIENT_ID,
+            'Mx-Api-Key': process.env.MX_API_KEY
         }
     }
 });
@@ -210,7 +212,7 @@ export class FuseService {
         }
 
         const isValidRequest = this.requestIsFromFuse(
-            keys.FUSE_API_KEY,
+            process.env.FUSE_API_KEY!,
             event,
             fuseVerificationHeader
         );
