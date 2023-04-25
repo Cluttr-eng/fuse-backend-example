@@ -12,6 +12,7 @@ export class FuseController {
   }
 
   init() {
+    // This generates a client secret which the front end fuse sdk uses to open up the list of bank institutions
     this.router.post("/create-session", (req, res, next) => {
       const { user_id, access_token, is_web_view } = req.body;
       this.service
