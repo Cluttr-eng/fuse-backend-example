@@ -1,11 +1,8 @@
 import express, { ErrorRequestHandler } from "express";
-import * as dotenv from "dotenv";
-import { FuseController } from "./fuse.controller";
-import { FuseService } from "./fuse.service";
 import cors from "cors";
 import morgan from "morgan";
-
-dotenv.config();
+import { FuseController } from "./fuse.controller";
+import { FuseService } from "./fuse.service";
 
 const server = express();
 server.use(morgan("dev"));
