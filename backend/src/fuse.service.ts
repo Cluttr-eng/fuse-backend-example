@@ -64,9 +64,7 @@ export class FuseService {
       // True by default.
       // If you are NOT using mobile, set to false.
       // If using mobile, set to true/false depending on if a webview is being used.
-      ...(isWebView && {
-        is_web_view: isWebView,
-      }),
+      is_web_view: isWebView,
     };
 
     const response = await fuseApi.createSession(createSessionRequest);
