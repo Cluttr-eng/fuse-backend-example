@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import {useFuse} from 'react-native-fuse-connect';
 
+const BACKEND_URL = 'http://localhost:8080';
+
 function App(): JSX.Element {
   const [clientSecret, setClientSecret] = useState('');
 
@@ -53,8 +55,7 @@ function App(): JSX.Element {
       body: JSON.stringify(body),
     };
 
-    // TODO: Change to use env key
-    const url = `http://localhost:8080${endpoint}`;
+    const url = `${BACKEND_URL}${endpoint}`;
 
     const response = await fetch(url, options);
 
@@ -66,7 +67,6 @@ function App(): JSX.Element {
   };
 
   const handleLinkAccountPress = async () => {
-    // TODO: Change to user id
     const response = await backendFetch('/create-session', 'POST', {
       user_id: 'user1234',
       is_web_view: false,
