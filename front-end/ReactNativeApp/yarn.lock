@@ -5721,6 +5721,11 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-fuse-connect@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-fuse-connect/-/react-native-fuse-connect-1.0.3.tgz#7bff248faa08d21352323a925ff4e33671d6e0b4"
+  integrity sha512-9iWDt4Jrnso8r5kWOQw6YHQCWAREI1HrLcpH8QkS67zwEnLTea8D0NGyScR/Xlo+L4NBc1wgTmtPEbMCOE25Wg==
+
 react-native-gradle-plugin@^0.71.17:
   version "0.71.17"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz#cf780a27270f0a32dca8184eff91555d7627dd00"

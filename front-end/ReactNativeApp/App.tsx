@@ -1,39 +1,91 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {useFuse} from 'react-native-fuse-connect';
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [clientSecret, setClientSecret] = useState('');
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.black : Colors.white,
-    flex: 1,
+  const {open, ready} = useFuse({
+    clientSecret: clientSecret,
+    onInstitutionSelected: async (institutionId: string, clientSecret) => {
+      const response = await backendFetch('/create-link-token', 'POST', {
+        user_id: 'user1234',
+        institution_id: institutionId,
+        client_secret: clientSecret,
+      });
+      return response['link_token'];
+    },
+
+    onSuccess: async (publicToken: string) => {
+      await backendFetch('/exchange-public-token', 'POST', {
+        public_token: publicToken,
+      });
+      setClientSecret('');
+    },
+    onExit: () => {
+      setClientSecret('');
+    },
+  });
+
+  useEffect(() => {
+    if (ready) {
+      open();
+    }
+  }, [ready]);
+
+  const backendFetch = async (
+    endpoint: string,
+    method: string = 'POST',
+    body?: any,
+  ) => {
+    const options: RequestInit = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    };
+
+    // TODO: Change to use env key
+    const url = `http://localhost:8080${endpoint}`;
+
+    const response = await fetch(url, options);
+
+    const responseBody = await response.json();
+
+    console.log('Backend Fetch Response', url, responseBody);
+
+    return responseBody;
   };
 
-  const handleLinkAccountPress = () => {
-    // Handle the button press event here
+  const handleLinkAccountPress = async () => {
+    // TODO: Change to user id
+    const response = await backendFetch('/create-session', 'POST', {
+      user_id: 'user1234',
+      is_web_view: false,
+    });
+
+    setClientSecret(response['client_secret']);
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={styles.background}>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        barStyle="dark-content"
+        backgroundColor={styles.background.backgroundColor}
       />
-      <View style={[styles.container, backgroundStyle]}>
+      <View style={styles.container}>
         <TouchableOpacity
           onPress={handleLinkAccountPress}
           style={styles.button}>
-          <Text style={styles.buttonText}>Link Account</Text>
+          <Text style={styles.buttonText}>Link your Account</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -41,6 +93,10 @@ function App(): JSX.Element {
 }
 
 const styles = StyleSheet.create({
+  background: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
